@@ -48,7 +48,7 @@ async function main() {
 
   const settingsRes = await pool.query(
     `
-      SELECT base_url, site_name, site_description
+      SELECT base_url, admin_base_url, site_name, site_description
       FROM site_settings
       WHERE id = 1;
     `,
@@ -82,6 +82,9 @@ async function main() {
 
   const settings = settingsRes.rows[0] ?? null;
   const baseUrl = ensureTrailingSlash(settings?.base_url || "https://itriu.github.io/");
+  const adminBaseUrl = ensureTrailingSlash(
+    settings?.admin_base_url || process.env.NEXT_PUBLIC_ADMIN_BASE_URL || "https://itriu.vercel.app/",
+  );
   const siteName = settings?.site_name ? String(settings.site_name) : "Shopee Affiliate";
   const siteDescription = settings?.site_description ? String(settings.site_description) : "";
 
@@ -132,6 +135,7 @@ async function main() {
     `export type GeneratedTag = { id: string; name: string; slug: string };\n` +
     `export type GeneratedPostTag = { postId: string; tagId: string };\n\n` +
     `export const contentAssetTag = ${JSON.stringify(assetTag)} as const;\n` +
+    `export const adminBaseUrl = ${JSON.stringify(adminBaseUrl)} as const;\n` +
     `export const posts: GeneratedPost[] = ${JSON.stringify(posts, null, 2)};\n` +
     `export const tags: GeneratedTag[] = ${JSON.stringify(tags, null, 2)};\n` +
     `export const postTags: GeneratedPostTag[] = ${JSON.stringify(postTags, null, 2)};\n`;

@@ -1,7 +1,7 @@
 import type { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
-import { marked } from "marked";
 import { posts, type GeneratedPost } from "@/generated/content";
+import { renderMarkdown } from "@/lib/markdown";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
@@ -15,7 +15,7 @@ export const getStaticProps: GetStaticProps<{ post: GeneratedPost; html: string 
   const post = posts.find((p) => p.slug === slug);
   if (!post) return { notFound: true };
 
-  const html = marked.parse(post.content) as string;
+  const html = renderMarkdown(post.content);
 
   return {
     props: {

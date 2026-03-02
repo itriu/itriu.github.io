@@ -13,6 +13,7 @@ export type GeneratedTag = { id: string; name: string; slug: string };
 export type GeneratedPostTag = { postId: string; tagId: string };
 
 export const contentAssetTag = "dev" as const;
+export const adminBaseUrl = "https://itriu.vercel.app/" as const;
 export const posts: GeneratedPost[] = [];
 export const tags: GeneratedTag[] = [];
 export const postTags: GeneratedPostTag[] = [];
