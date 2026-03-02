@@ -52,7 +52,12 @@ async function main() {
   const generatedDir = path.join(root, "src", "generated");
   fs.mkdirSync(generatedDir, { recursive: true });
 
-  const ts = `export const themeVersion = ${Number(row.version) || 1} as const;\n`;
+  const assetTag =
+    process.env.GITHUB_SHA ??
+    process.env.VERCEL_GIT_COMMIT_SHA ??
+    String(Number(row.version) || 1);
+
+  const ts = `export const themeAssetTag = ${JSON.stringify(assetTag)} as const;\n`;
   fs.writeFileSync(path.join(generatedDir, "theme.ts"), ts, "utf8");
 
   console.log(`Synced theme v${row.version}`);

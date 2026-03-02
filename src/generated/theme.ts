@@ -1,1 +1,1 @@
-export const themeVersion = 1 as const;
+export const themeAssetTag = "dev" as const;
