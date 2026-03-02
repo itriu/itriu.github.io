@@ -12,6 +12,11 @@ export default function PostsIndex() {
         <div className="mt-6 grid gap-4">
           {posts.map((p) => (
             <article key={p.id} className="rounded-lg border border-zinc-200 p-4">
+              {p.coverUrl ? (
+                <div className="mb-3 overflow-hidden rounded-md border border-zinc-200 bg-white">
+                  <img className="h-auto w-full" src={p.coverUrl} alt={p.title} loading="lazy" />
+                </div>
+              ) : null}
               <h2 className="text-lg font-semibold">
                 <Link className="underline" href={`/posts/${p.slug}`}>
                   {p.title}

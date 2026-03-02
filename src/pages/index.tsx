@@ -72,6 +72,11 @@ export default function Home() {
             <div className="mt-4 grid gap-4 md:grid-cols-3">
               {featured.map((p) => (
                 <article key={p.id} className="rounded-xl border border-zinc-200 p-5">
+                  {p.coverUrl ? (
+                    <div className="mb-3 overflow-hidden rounded-lg border border-zinc-200 bg-white">
+                      <img className="h-auto w-full" src={p.coverUrl} alt={p.title} loading="lazy" />
+                    </div>
+                  ) : null}
                   <div className="text-xs font-medium text-zinc-500">{formatDate(p.publishedAt) ?? ""}</div>
                   <h3 className="mt-2 text-base font-semibold leading-6">
                     <Link className="underline" href={`/posts/${p.slug}`}>
@@ -100,6 +105,11 @@ export default function Home() {
               <div className="mt-4 grid gap-3">
                 {latest.map((p) => (
                   <article key={p.id} className="rounded-xl border border-zinc-200 p-4">
+                    {p.coverUrl ? (
+                      <div className="mb-3 overflow-hidden rounded-lg border border-zinc-200 bg-white">
+                        <img className="h-auto w-full" src={p.coverUrl} alt={p.title} loading="lazy" />
+                      </div>
+                    ) : null}
                     <div className="text-xs font-medium text-zinc-500">
                       {formatDate(p.publishedAt) ?? ""}
                     </div>
