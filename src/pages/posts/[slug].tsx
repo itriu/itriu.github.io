@@ -1,7 +1,9 @@
 import type { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
+import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
+import { serialize } from "next-mdx-remote/serialize";
 import { posts, type GeneratedPost } from "@/generated/content";
-import { renderMarkdown } from "@/lib/markdown";
+import { mdxComponents } from "@/lib/mdx-components";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
@@ -10,22 +12,31 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<{ post: GeneratedPost; html: string }> = async (ctx) => {
+export const getStaticProps: GetStaticProps<{
+  post: GeneratedPost;
+  mdxSource: MDXRemoteSerializeResult;
+}> = async (ctx) => {
   const slug = String(ctx.params?.slug ?? "");
   const post = posts.find((p) => p.slug === slug);
   if (!post) return { notFound: true };
 
-  const html = renderMarkdown(post.content);
+  const mdxSource = await serialize(post.content);
 
   return {
     props: {
       post,
-      html,
+      mdxSource,
     },
   };
 };
 
-export default function PostPage({ post, html }: { post: GeneratedPost; html: string }) {
+export default function PostPage({
+  post,
+  mdxSource,
+}: {
+  post: GeneratedPost;
+  mdxSource: MDXRemoteSerializeResult;
+}) {
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
       <div className="text-sm">
@@ -37,10 +48,9 @@ export default function PostPage({ post, html }: { post: GeneratedPost; html: st
       <h1 className="mt-4 text-3xl font-semibold tracking-tight">{post.title}</h1>
       {post.excerpt ? <p className="mt-3 text-zinc-600">{post.excerpt}</p> : null}
 
-      <article
-        className="prose prose-zinc mt-10 max-w-none"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      <article className="prose prose-zinc mt-10 max-w-none">
+        <MDXRemote {...mdxSource} components={mdxComponents} />
+      </article>
     </main>
   );
 }
